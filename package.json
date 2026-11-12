@@ -1,0 +1,20 @@
+{
+  "name": "pinball3d",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Three 3D pinball tables (Riffgewitter, Rotorsturm, Erdabwehr) by Echomotion — three.js + Blender",
+  "scripts": {
+    "models": "python3 blender/build_table.py",
+    "build": "node tools/build.mjs",
+    "sim": "node tools/sim.mjs",
+    "serve": "node tools/serve.mjs"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@fontsource/metal-mania": "^5.0.0",
+    "esbuild": "^0.28.0"
+  }
+}

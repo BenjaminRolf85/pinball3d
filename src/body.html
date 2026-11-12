@@ -1,0 +1,168 @@
+<div id="app" class="app" data-state="loading">
+  <canvas id="stage" class="stage" tabindex="0" aria-label="Riffgewitter Hard Rock Flipper / Pinball"></canvas>
+  <div id="flash" class="flash" aria-hidden="true"></div>
+  <div id="popups" class="popups" aria-hidden="true"></div>
+
+  <header class="hud" id="hud">
+    <button class="icon-btn" id="btn-pause" type="button" data-i18n-label="pause">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+    </button>
+    <div class="dmd"><canvas id="dmd" width="128" height="32" aria-hidden="true"></canvas></div>
+    <div class="hud-actions">
+      <button class="icon-btn" id="btn-view" type="button" data-i18n-label="viewBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l5 16H3z"/><path d="M6.2 10h11.6M4.6 15h14.8M12 4v16"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-sound" type="button" data-i18n-label="sound" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="touch-hints" aria-hidden="true">
+    <span class="hint" id="hint-l"></span>
+    <span class="hint" id="hint-r"></span>
+  </div>
+  <button class="nudge-btn" id="btn-nudge" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+    <span data-i18n="nudge"></span>
+  </button>
+  <div class="plunger-meter" aria-hidden="true"><div class="plunger-meter__fill"></div></div>
+
+  <section class="screen" id="screen-start" hidden>
+    <div class="title-block">
+      <p class="eyebrow" data-i18n="subtitle"></p>
+      <h1 class="logo js-table-name">Riffgewitter</h1>
+      <p class="dedication" id="dedication"></p>
+    </div>
+    <div class="plate">
+      <div class="tables" id="table-pick" role="group" data-i18n-label="chooseTable">
+        <button class="table-card table-card--riff" type="button" data-v="riff" id="table-riff">
+          <span class="table-card__name">Riffgewitter</span>
+          <span class="table-card__tag" data-i18n="tagRiff"></span>
+        </button>
+        <button class="table-card table-card--rotor" type="button" data-v="rotor" id="table-rotor">
+          <span class="table-card__name">Rotorsturm</span>
+          <span class="table-card__tag" data-i18n="tagRotor"></span>
+        </button>
+        <button class="table-card table-card--alien" type="button" data-v="alien" id="table-alien">
+          <span class="table-card__name">Erdabwehr</span>
+          <span class="table-card__tag" data-i18n="tagAlien"></span>
+        </button>
+      </div>
+      <div class="actions">
+        <button class="btn btn--primary" id="btn-play" type="button" data-i18n="play"></button>
+        <p class="credits" id="credits-start" aria-live="polite"></p>
+        <button class="btn" id="btn-help" type="button" data-i18n="howTo"></button>
+        <button class="btn" id="btn-scores" type="button" data-i18n="highScores"></button>
+      </div>
+      <div class="settings">
+        <div class="setting"><span data-i18n="language"></span>
+          <div class="seg" id="seg-lang"><button type="button" data-v="de" id="lang-de">DE</button><button type="button" data-v="en" id="lang-en">EN</button></div>
+        </div>
+        <div class="setting"><span data-i18n="music"></span>
+          <div class="seg" id="seg-music"><button type="button" data-v="1" id="music-on" data-i18n="on"></button><button type="button" data-v="0" id="music-off" data-i18n="off"></button></div>
+        </div>
+        <div class="setting"><span data-i18n="quality"></span>
+          <div class="seg" id="seg-quality"><button type="button" data-v="high" id="quality-high" data-i18n="qualityHigh"></button><button type="button" data-v="low" id="quality-low" data-i18n="qualityLow"></button></div>
+        </div>
+      </div>
+      <footer class="brand">
+        <a class="brand__name" href="https://echomotion.ai" target="_blank" rel="noopener"><span data-i18n="brandBy"></span> <b>Echomotion</b></a>
+        <span class="brand__claim">AI at its best.</span>
+        <button class="brand__link" id="btn-imprint" type="button" data-i18n="imprint"></button>
+      </footer>
+    </div>
+  </section>
+
+  <section class="screen screen--solid" id="screen-help" hidden>
+    <div class="plate plate--scroll">
+      <h2 data-i18n="helpTitle"></h2>
+      <h3 data-i18n="helpTouchTitle"></h3>
+      <ul id="help-touch"></ul>
+      <h3 data-i18n="helpKeysTitle"></h3>
+      <dl class="keys" id="help-keys"></dl>
+      <h3 data-i18n="helpRulesTitle"></h3>
+      <ul id="help-rules"></ul>
+      <div class="actions"><button class="btn" id="btn-help-back" type="button" data-i18n="back"></button></div>
+    </div>
+  </section>
+
+  <section class="screen screen--solid" id="screen-scores" hidden>
+    <div class="plate plate--scroll">
+      <h2 data-i18n="highScores"></h2>
+      <ol class="hiscores" id="scores-list"></ol>
+      <p id="scores-empty" data-i18n="noScores" hidden></p>
+      <div class="actions"><button class="btn" id="btn-scores-back" type="button" data-i18n="back"></button></div>
+    </div>
+  </section>
+
+  <section class="screen screen--solid" id="screen-pause" hidden>
+    <div class="plate">
+      <h2 data-i18n="paused"></h2>
+      <div class="song" id="song-row" hidden>
+        <div class="song__info"><h3 data-i18n="nowPlaying"></h3><p id="now-playing"></p></div>
+        <button class="btn" id="btn-next" type="button" data-i18n="nextSong"></button>
+      </div>
+      <div class="actions">
+        <button class="btn btn--primary" id="btn-resume" type="button" data-i18n="resume"></button>
+        <button class="btn" id="btn-pause-help" type="button" data-i18n="howTo"></button>
+        <button class="btn" id="btn-quit" type="button" data-i18n="quit"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen screen--solid" id="screen-over" hidden>
+    <div class="plate plate--scroll">
+      <h2 data-i18n="gameOver"></h2>
+      <span class="badge" id="over-new" data-i18n="newHigh" hidden></span>
+      <div>
+        <h3 data-i18n="yourScore"></h3>
+        <div class="score-big" id="over-score">0</div>
+      </div>
+      <dl class="stats" id="over-stats"></dl>
+      <h3 data-i18n="highScores"></h3>
+      <ol class="hiscores" id="over-list"></ol>
+      <div class="actions">
+        <button class="btn btn--primary" id="btn-again" type="button" data-i18n="playAgain"></button>
+        <p class="credits" id="credits-over" aria-live="polite"></p>
+        <button class="btn" id="btn-menu" type="button" data-i18n="quit"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen screen--solid" id="screen-imprint" hidden>
+    <div class="plate plate--scroll imprint">
+      <h2 data-i18n="imprint"></h2>
+      <p><b>Echomotion GmbH</b><br>Nymphenburger Str. 148<br>80634 München<br><span data-i18n="imprintCountry"></span></p>
+      <dl class="imprint__facts">
+        <dt data-i18n="imprintRep"></dt><dd>Benjamin Rolf Lange</dd>
+        <dt data-i18n="imprintRegister"></dt><dd>HRB 219355, Amtsgericht München</dd>
+        <dt data-i18n="imprintPhone"></dt><dd><a href="tel:+498921556020">+49 (0) 89 2155 602 00</a></dd>
+        <dt data-i18n="imprintFax"></dt><dd>+49 (0) 89 2155 602 01</dd>
+        <dt data-i18n="imprintMail"></dt><dd><a href="mailto:contact@echomotion.de">contact@echomotion.de</a></dd>
+      </dl>
+      <p data-i18n="imprintDispute"></p>
+      <p data-i18n="imprintStorage"></p>
+      <p class="imprint__links"><a href="https://echomotion.ai/impressum" target="_blank" rel="noopener" data-i18n="imprintFull"></a> · <a href="https://echomotion.ai/datenschutz/" target="_blank" rel="noopener" data-i18n="imprintPrivacy"></a></p>
+      <p class="imprint__copy">© 2026 Echomotion GmbH · Made in München</p>
+      <div class="actions"><button class="btn" id="btn-imprint-back" type="button" data-i18n="back"></button></div>
+    </div>
+  </section>
+
+  <section class="screen screen--solid" id="screen-credits" hidden>
+    <div class="plate plate--credits">
+      <h2 data-i18n="noCreditsTitle"></h2>
+      <p class="credits-msg" data-i18n="noCreditsText"></p>
+      <div class="actions">
+        <a class="btn btn--primary" id="btn-multimate" href="https://multimate.app" target="_blank" rel="noopener" data-i18n="noCreditsCta"></a>
+        <button class="btn" id="btn-credits-back" type="button" data-i18n="back"></button>
+      </div>
+    </div>
+  </section>
+
+  <div class="loading" id="loading">
+    <div class="logo js-table-name">Riffgewitter</div>
+    <div class="loading__bar"><i></i></div>
+    <p id="loading-text">Die Bühne wird aufgebaut / Setting up the stage</p>
+  </div>
+</div>

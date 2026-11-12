@@ -1,0 +1,11 @@
+import { createRequire } from 'node:module';
+const { chromium } = createRequire(import.meta.url)('playwright');
+import fs from 'node:fs';
+const [,, src, out, scale = '1'] = process.argv;
+const svg = fs.readFileSync(src, 'utf8');
+const b = await chromium.launch();
+const p = await b.newPage({ deviceScaleFactor: +scale });
+await p.setContent(`<body style="margin:0;background:#111">${svg}</body>`);
+const el = await p.$('svg');
+await el.screenshot({ path: out });
+await b.close();

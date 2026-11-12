@@ -1,0 +1,183 @@
+/* RIFFGEWITTER design tokens.
+   Layout concept: one full-bleed stage (the table), a dot-matrix scoreboard bolted to the top edge,
+   and steel plates with clipped corners for every menu. Black, chrome, bone white and blood red: loud, fast, dirty.
+   Lightning (volt) is the only cool accent.
+   Single dark look by design: this is a stage at night. */
+:root {
+  color-scheme: dark;
+
+  /* --- colour primitives */
+  --c-void: #07060a;
+  --c-coal: #110f15;
+  --c-iron: #1d1a23;
+  --c-steel: #37333f;
+  --c-rivet: #5b5666;
+  --c-ash: #9b96a6;
+  --c-chrome: #ece9f1;
+  --c-ember: #e8262a;
+  --c-ember-hot: #f4ecdc;
+  --c-blood: #8f0d18;
+  --c-volt: #7fd6ff;
+  --c-amber: #ffb000;
+  --c-green: #58e06a;
+
+  /* --- semantic colour */
+  --bg: var(--c-void);
+  --surface: var(--c-coal);
+  --surface-raised: var(--c-iron);
+  --border: var(--c-steel);
+  --border-strong: var(--c-rivet);
+  --text: var(--c-chrome);
+  --text-dim: var(--c-ash);
+  --accent: var(--c-ember);
+  --accent-hot: var(--c-ember-hot);
+  --accent-contrast: #0b0507;
+  --electric: var(--c-volt);
+  --danger: var(--c-blood);
+  --dmd: var(--c-amber);
+  --focus: var(--c-volt);
+  --scrim: rgb(7 6 10 / 0.82);
+  --flash: var(--c-chrome);
+  --alarm: rgb(255 26 16 / 0.55);
+
+  /* --- 3-D scene colours (read by the renderer) */
+  --scene-bg: #050408;
+  --scene-fog: #0b0710;
+  --lamp-orange: #ff6a1a;
+  --lamp-red: #ff1d2a;
+  --lamp-blue: #4fb8ff;
+  --lamp-amber: #ffb000;
+  --lamp-green: #4dff6a;
+  --lamp-white: #fff2dc;
+
+  /* --- type */
+  --font-display-riff: 'Metal Mania', 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', fantasy;
+  --font-display-rotor: 'Black Ops One', 'Impact', 'Arial Black', sans-serif;
+  --font-display-alien: 'Orbitron', 'Eurostile', 'Arial Black', sans-serif;
+  --font-display: var(--font-display-riff);
+  --font-ui: 'Barlow Condensed', 'Roboto Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.5rem;
+  --fs-hero: clamp(2.75rem, 13vw, 6.5rem);
+  --lh-tight: 1.05;
+  --lh-body: 1.5;
+  --ls-label: 0.14em;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  /* --- space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --gutter: 16px;
+  --touch: 48px;
+  --measure: 34rem;
+
+  /* --- shape */
+  --cut: 12px;
+  --cut-sm: 7px;
+  --line: 1px;
+  --line-strong: 2px;
+  --plate: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  --plate-sm: polygon(var(--cut-sm) 0, 100% 0, 100% calc(100% - var(--cut-sm)), calc(100% - var(--cut-sm)) 100%, 0 100%, 0 var(--cut-sm));
+
+  /* --- glow / elevation */
+  --glow-ember: 0 0 18px rgb(232 38 42 / 0.6), 0 0 46px rgb(232 38 42 / 0.28);
+  --glow-volt: 0 0 14px rgb(127 214 255 / 0.55);
+  --glow-dmd: drop-shadow(0 0 5px rgb(255 176 0 / 0.55));
+  --shadow-plate: 0 18px 50px rgb(0 0 0 / 0.7);
+  --logo-glow: rgb(232 38 42 / 0.6);
+
+  /* --- motion */
+  --t-fast: 120ms;
+  --t-med: 260ms;
+  --t-slow: 600ms;
+  --t-pop: 950ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* --- layers */
+  --z-stage: 0;
+  --z-flash: 5;
+  --z-hud: 10;
+  --z-screen: 20;
+  --z-loading: 30;
+}
+
+/* ROTORSTURM: olive drab, khaki, signal yellow and smoke green; a field radio's green display.
+   Same structure, different world: only tokens change. */
+:root[data-table="rotor"] {
+  --c-void: #070805;
+  --c-coal: #10120b;
+  --c-iron: #1b1e12;
+  --c-steel: #34392a;
+  --c-rivet: #5a604a;
+  --c-ash: #a3a68f;
+  --c-chrome: #ece6d2;
+  --c-ember: #e9a227;
+  --c-ember-hot: #f6e7b8;
+  --c-blood: #8a3b12;
+  --c-volt: #9fd8ff;
+  --c-amber: #8cff6a;
+  --accent-contrast: #0d0d05;
+  --scrim: rgb(7 8 5 / 0.84);
+  --glow-ember: 0 0 18px rgb(233 162 39 / 0.55), 0 0 46px rgb(233 162 39 / 0.25);
+  --glow-dmd: drop-shadow(0 0 5px rgb(140 255 106 / 0.5));
+  --scene-bg: #050604;
+  --scene-fog: #0a0c07;
+  --lamp-orange: #ff9a1a;
+  --lamp-red: #ff3020;
+  --lamp-blue: #6ec8ff;
+  --lamp-amber: #ffc21a;
+  --lamp-green: #6dff4a;
+  --lamp-white: #fff4d6;
+  --rotor-signal: #f2c230;
+  --rotor-smoke: #86e05a;
+  --rotor-khaki: #c9b98a;
+  --rotor-olive: #4d5a2a;
+  --font-display: var(--font-display-rotor);
+  --logo-glow: rgb(233 162 39 / 0.55);
+}
+
+/* ERDABWEHR: deep space violet-black, acid alien green, cold human cyan, warning red.
+   Same structure, different world: only tokens change. */
+:root[data-table="alien"] {
+  --c-void: #05040b;
+  --c-coal: #0c0a18;
+  --c-iron: #171429;
+  --c-steel: #2c2747;
+  --c-rivet: #534c78;
+  --c-ash: #a39fc2;
+  --c-chrome: #e6e9ff;
+  --c-ember: #7dff3a;
+  --c-ember-hot: #d4ffb0;
+  --c-blood: #ff2d55;
+  --c-volt: #38e8ff;
+  --c-amber: #7dff3a;
+  --accent-contrast: #061003;
+  --scrim: rgb(5 4 11 / 0.84);
+  --glow-ember: 0 0 18px rgb(125 255 58 / 0.5), 0 0 46px rgb(125 255 58 / 0.22);
+  --glow-dmd: drop-shadow(0 0 5px rgb(56 232 255 / 0.55));
+  --scene-bg: #04030a;
+  --scene-fog: #0b0818;
+  --lamp-orange: #ff8a1a;
+  --lamp-red: #ff2d55;
+  --lamp-blue: #38e8ff;
+  --lamp-amber: #ffd21a;
+  --lamp-green: #7dff3a;
+  --lamp-white: #f2f4ff;
+  --alien-violet: #a64dff;
+  --alien-acid: #7dff3a;
+  --alien-cyan: #38e8ff;
+  --font-display: var(--font-display-alien);
+  --logo-glow: rgb(125 255 58 / 0.5);
+}
