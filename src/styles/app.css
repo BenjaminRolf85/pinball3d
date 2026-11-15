@@ -387,6 +387,7 @@ body {
   color: var(--text-dim);
 }
 .credits[data-low="true"] { color: var(--accent-hot); }
+.btn--xr { flex-basis: 100%; border-color: var(--electric, var(--c-volt)); color: var(--text); box-shadow: inset 0 0 0 var(--line) var(--electric, var(--c-volt)); }
 .plate--credits { text-align: center; }
 /* Echomotion branding on the start screen; the legal notice opens on click */
 .brand { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: var(--sp-1) var(--sp-3); padding-top: var(--sp-2); border-top: var(--line) solid var(--border-strong); font-family: var(--font-ui); font-size: var(--fs-xs); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--text-dim); }

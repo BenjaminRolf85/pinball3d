@@ -17,6 +17,8 @@ Online spielen: https://riffgewitter.netlify.app
 
 Alle Texte gibt es auf Deutsch und Englisch. Kameraansichten (Spieler, ganzer Tisch, flach, nah, von oben) wechselt der Knopf oben rechts oder die Taste V.
 
+**Mixed Reality (Meta Quest 3):** Im Browser der Quest erscheint im Startmenü „Im Raum spielen (Mixed Reality)“. Der Automat steht dann in Originalgröße in deinem Raum. Trigger oder Finger-Pinch: Flipper. Grip rechts oder A: Abschuss. B oder Grip links: Rütteln. Daumenstick drücken: Tisch vor dir neu platzieren. X: beenden. Geräte ohne Passthrough bekommen „In VR spielen“.
+
 **Credits:** Jedes Gerät startet mit 20 Credits, ein Spiel kostet einen. Danach erscheint der Hinweis auf MultiMate.app. Die Credits liegen nur im Browser-Speicher (`localStorage`).
 
 ## Steuerung
@@ -79,6 +81,7 @@ npm run serve
 | `TABLE=alien node tools/sim.mjs 40` | Bot spielt 40 Partien ohne Grafik (Statistik pro Ereignis) |
 | `TABLE=alien node tools/stuck.mjs` | Stellen, an denen die Kugel liegen bleibt |
 | `node tools/e2e.mjs alien` | Browser-Test mit echter Grafik, Eingaben und Bot |
+| `node tools/xr-test.mjs alien` | Mixed Reality mit emulierter Meta Quest 3 (IWER): Sitzung, Controller, Beenden |
 | `node tools/shot.mjs build/shots alien-play` | Screenshot einer Szene |
 | `node tools/audio-test.mjs` | Pegel und Fehlerfreiheit aller Klänge |
 | `node tools/art-preview.mjs alien build/art --debug` | Spielfeldgrafik als Bild, mit Geometrie-Overlay |
@@ -123,6 +126,8 @@ Play online: https://riffgewitter.netlify.app
 | Targets / lanes | R-O-C-K / A-M-P | stars / S-O-S | E-R-D-E / U-F-O |
 
 All text is available in German and English. Camera views (player, full table, low angle, close up, top down) are switched with the button top right or the V key.
+
+**Mixed reality (Meta Quest 3):** in the Quest browser the start menu offers "Play in your room (mixed reality)". The cabinet then stands at full size in your room. Trigger or finger pinch: flippers. Right grip or A: launch. B or left grip: nudge. Click the thumbstick: place the table in front of you again. X: leave. Headsets without passthrough get "Play in VR".
 
 **Credits:** every device starts with 20 credits and a game costs one. After that the game points to MultiMate.app. Credits are kept only in browser storage (`localStorage`).
 
