@@ -18,6 +18,7 @@ import { TABLES, tableById } from './tables.js';
 import { cssColor } from './playfieldArt.js';
 import { drawUSFlag, drawStar } from './art/rotorArt.js';
 import { alienFx } from './render-alien.js';
+import { createXR } from './xr.js';
 
 const $ = (id) => document.getElementById(id);
 const app = $('app');
@@ -731,10 +732,12 @@ function updateCredits() {
 }
 function requestStart() {
   const n = creditCount();
-  if (n <= 0) { show('credits'); return; }
+  if (n <= 0) { if (!(xrCtl && xrCtl.active)) show('credits'); return false; }
   store.data.credits = n - 1; store.save();
   updateCredits();
   startGame();
+  if (xrCtl && xrCtl.active) show('none');
+  return true;
 }
 
 // ------------------------------------------------------------------ game flow
@@ -827,6 +830,7 @@ function bindInput() {
   });
   window.addEventListener('blur', () => { game.flipper('L', false); game.flipper('R', false); pointers.clear(); });
   document.addEventListener('visibilitychange', () => {
+    if (xrCtl && xrCtl.active) return; // the page is hidden while the headset shows the game
     if (document.hidden) { if (game.state === 'playing' || game.state === 'bonus') setPaused(true); else { audio.suspend(); jukebox.pause(); } }
     else if (!paused) audio.resume();
   });
@@ -888,8 +892,15 @@ function measure() {
 }
 
 let last = 0;
+let xrCtl = null;
 function tick(now) {
+  if (xrCtl && xrCtl.active) return; // the headset drives the loop (see enterXR)
   if (window.__rgFreeze) { last = now; requestAnimationFrame(tick); return; }
+  step(now);
+  requestAnimationFrame(tick);
+}
+
+function step(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
   last = now;
   if (!paused) {
@@ -914,7 +925,37 @@ function tick(now) {
   if (!paused && game.state === 'playing') for (const b of game.phys.balls) if (b.mode !== 'held') roll = Math.max(roll, Math.min(1, (Math.hypot(b.vx, b.vy) + (b.mode === 'ramp' ? b.sv : 0)) / 3));
   audio.setRoll(roll);
   if (flashV > 0.002) { flashV *= Math.exp(-dt * 9); flashEl.style.opacity = flashV.toFixed(3); } else if (flashEl.style.opacity !== '0') flashEl.style.opacity = '0';
-  requestAnimationFrame(tick);
+}
+
+// ------------------------------------------------------------------ Meta Quest: mixed reality / VR
+async function setupXR() {
+  xrCtl = createXR({
+    renderer, game, dmd, audio,
+    onStartGame: () => { if (!requestStart()) dmd.show(t('d_xrNoCredits'), { dur: 4, pri: 9 }); },
+    onEnter: () => {
+      if (paused) setPaused(false);
+      show('none');
+      renderer.renderer.setAnimationLoop((time, frame) => { step(time); xrCtl.frame(frame); });
+      dmd.show(t('d_xr'), { dur: 3.5, pri: 8 });
+      if (game.state !== 'playing' && game.state !== 'bonus') { if (!requestStart()) dmd.show(t('d_xrNoCredits'), { dur: 4, pri: 9 }); }
+    },
+    onExit: () => {
+      if (game.state === 'playing' || game.state === 'bonus') setPaused(true);
+      else show(game.state === 'gameover' ? 'over' : 'start');
+      last = performance.now();
+      requestAnimationFrame(tick);
+    },
+  });
+  const mode = await xrCtl.supported();
+  if (!mode) return;
+  const btn = $('btn-xr');
+  btn.dataset.i18n = mode === 'immersive-ar' ? 'xrEnterAR' : 'xrEnterVR';
+  btn.textContent = t(btn.dataset.i18n);
+  btn.hidden = false;
+  btn.addEventListener('click', () => {
+    audio.unlock(); audio.sfx('uiClick');
+    xrCtl.enter(mode).catch((err) => { console.warn('XR', err); dmd.show(t('d_xrFail'), { dur: 3, pri: 9 }); });
+  });
 }
 
 async function boot() {
@@ -974,7 +1015,8 @@ async function boot() {
   renderer.setMode('attract');
   $('loading').hidden = true;
   show('start');
-  window.__rg = { game, renderer, audio, dmd, jukebox, startGame, requestStart, store, show, table: TABLE.id, switchTable };
+  setupXR();
+  window.__rg = { game, renderer, audio, dmd, jukebox, startGame, requestStart, store, show, table: TABLE.id, switchTable, xr: () => xrCtl };
   last = performance.now();
   requestAnimationFrame(tick);
 }

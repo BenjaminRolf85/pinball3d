@@ -38,7 +38,7 @@ export class Renderer {
     this.jets = [];
     this.ready = false;
 
-    const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance', stencil: false }));
+    const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance', stencil: false }));
     r.toneMapping = THREE.ACESFilmicToneMapping;
     r.toneMappingExposure = 0.95;
     r.outputColorSpace = THREE.SRGBColorSpace;
@@ -133,6 +133,7 @@ export class Renderer {
     f.rotation.x = -Math.PI / 2; f.position.y = -0.92;
     f.receiveShadow = false;
     this.scene.add(f);
+    this.floorMesh = f;
   }
 
   _composer() {
@@ -412,9 +413,9 @@ export class Renderer {
     this.pKind = new Uint8Array(N); this.pBase = new Float32Array(N * 4);
     this.pNext = 0;
     const mat = new THREE.ShaderMaterial({
-      uniforms: { uScale: { value: 600 } },
-      vertexShader: `attribute float aSize; attribute vec3 aColor; varying vec3 vColor; uniform float uScale;
-        void main(){ vColor=aColor; vec4 mv=modelViewMatrix*vec4(position,1.0); gl_PointSize=min(180.0, aSize*uScale/max(0.05,-mv.z)); gl_Position=projectionMatrix*mv; }`,
+      uniforms: { uScale: { value: 600 }, uMax: { value: 180 } },
+      vertexShader: `attribute float aSize; attribute vec3 aColor; varying vec3 vColor; uniform float uScale; uniform float uMax;
+        void main(){ vColor=aColor; vec4 mv=modelViewMatrix*vec4(position,1.0); gl_PointSize=min(uMax, aSize*uScale/max(0.05,-mv.z)); gl_Position=projectionMatrix*mv; }`,
       fragmentShader: `varying vec3 vColor;
         void main(){ float d=length(gl_PointCoord-0.5); float a=smoothstep(0.5,0.05,d); gl_FragColor=vec4(vColor*a*a,1.0); }`,
       blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
@@ -541,7 +542,33 @@ export class Renderer {
   }
 
   // ------------------------------------------------------------------ camera
+  // ------------------------------------------------------------------ WebXR (Meta Quest: mixed reality / VR)
+  /** Switch to headset rendering: no post-processing, the headset drives the camera. */
+  xrBegin(mode) {
+    this.xrActive = true;
+    this.xrMode = mode;
+    if (mode === 'immersive-ar') {
+      // passthrough: the real room is the background, the real floor replaces ours
+      this.scene.background = null;
+      this.renderer.setClearColor(0x000000, 0);
+      if (this.floorMesh) this.floorMesh.visible = false;
+    }
+    for (const b of this.beams || []) b.m.visible = false;
+    this.camMix = 1;
+  }
+
+  xrEnd() {
+    this.xrActive = false;
+    this.pMat.uniforms.uMax.value = 180;
+    this.xrMode = null;
+    this.scene.background = this.bg;
+    this.renderer.setClearColor(0x000000, 1);
+    if (this.floorMesh) this.floorMesh.visible = true;
+    if (this._w) this.resize(this._w, this._h, this.insets);
+  }
+
   resize(w, h, insets) {
+    if (this.renderer.xr && this.renderer.xr.isPresenting) { this._w = w; this._h = h; if (insets) this.insets = insets; return; }
     this._w = w; this._h = h;
     if (insets) this.insets = insets;
     const dpr = Math.min(window.devicePixelRatio || 1, this.quality === 'high' ? 2 : 1.5) * (this.scale || 1) * (this.dynScale || 1);
@@ -844,6 +871,15 @@ export class Renderer {
     this._lamps(dt, game);
     this._glows(dt, game);
     this._fxUpdate(dt, game);
+    if (this.xrActive) {
+      // in the headset: plain forward rendering (the XR compositor needs the default framebuffer);
+      // point sprites are sized for the eye buffer, not for the page canvas
+      const eye = this.renderer.xr.getCamera().cameras[0];
+      if (eye && eye.viewport && eye.viewport.w) this.pMat.uniforms.uScale.value = (eye.viewport.w * eye.projectionMatrix.elements[5]) / 2 * 0.6;
+      this.pMat.uniforms.uMax.value = 64;
+      this.renderer.render(this.scene, this.camera);
+      return;
+    }
     this._camera(dt, game);
 
     // adaptive resolution
@@ -1144,7 +1180,7 @@ export class Renderer {
     this.beamLevel += ((this.storm > 0 || this.multiball ? 0.6 : this.beamTarget) - this.beamLevel) * Math.min(1, dt * 2);
     for (const bm of this.beams) {
       bm.mat.opacity = this.beamLevel * (0.05 + 0.035 * Math.sin(t * 2.2 + bm.phase)) * (this.reduced ? 0.6 : 1);
-      bm.m.visible = bm.mat.opacity > 0.004;
+      bm.m.visible = bm.mat.opacity > 0.004 && !this.xrActive; // seen from above in a headset the cones turn into a glare
       const sp = this.multiball ? 2.6 : 0.7;
       bm.m.rotation.set(-0.95 + 0.28 * Math.sin(t * sp + bm.phase), 0, 0.4 * Math.sin(t * sp * 0.7 + bm.phase * 2));
     }
