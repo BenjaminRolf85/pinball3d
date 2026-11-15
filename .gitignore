@@ -6,6 +6,3 @@ __pycache__/
 *.pyc
 *.zip
 .DS_Store
-# the owner's background songs are not part of the public repository (rights);
-# put the .mp3 files here locally and `npm run build` picks them up
-assets/music/

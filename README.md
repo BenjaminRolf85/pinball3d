@@ -68,7 +68,7 @@ Lokal testen:
 npm run serve
 ```
 
-**Musik:** Die eigenen Hintergrundsongs sind aus Rechtegründen nicht im öffentlichen Repository. Lege die `.mp3`-Dateien nach `assets/music/`, dann übernimmt `npm run build` sie in die Jukebox. Ohne sie spielt der eingebaute Synthesizer-Soundtrack.
+**Musik:** Die sechs Hintergrundsongs (mit KI erstellt) liegen in `assets/music/`, `npm run build` übernimmt sie in die Jukebox (Taste T wechselt den Song). Weitere `.mp3`-Dateien dort kommen automatisch dazu. In der Einzeldatei fehlen sie, dort spielt der eingebaute Synthesizer-Soundtrack.
 
 **Veröffentlichen:** Den Ordner `dist/` auf einen beliebigen Webspace legen, zum Beispiel Netlify.
 
@@ -141,7 +141,7 @@ All text is available in German and English. Camera views (player, full table, l
 
 Requirements: Node.js 20+, Python 3.11+ with Blender as a module. Run the commands from the German section in the same order: install, export the layout, bake the playfield texture and build the table in Blender (for each table `riff`, `rotor`, `alien`), then `npm run build` to bundle everything into `dist/`. `npm run serve` serves it locally.
 
-**Music:** the owner's background songs are not in the public repository for rights reasons. Put the `.mp3` files into `assets/music/` and `npm run build` adds them to the jukebox. Without them the built-in synthesised soundtrack plays.
+**Music:** the six background songs (made with AI) are in `assets/music/`; `npm run build` adds them to the jukebox (key T skips to the next song). Further `.mp3` files there are picked up automatically. The single-file version leaves them out and plays the built-in synthesised soundtrack.
 
 **Publish:** upload the `dist/` folder to any web host, for example Netlify.
 
